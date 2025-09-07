@@ -1,0 +1,125 @@
+// 颜色应用混合器
+@mixin color($property, $color-var, $opacity: 1) {
+  #{$property}: rgb(var(--#{$color-var}) / $opacity);
+}
+
+@mixin bg-color($color-var, $opacity: 1) {
+  background-color: rgb(var(--#{$color-var}) / $opacity);
+}
+
+@mixin text-color($color-var, $opacity: 1) {
+  color: rgb(var(--#{$color-var}) / $opacity);
+}
+
+@mixin border-color($color-var, $opacity: 1) {
+  border-color: rgb(var(--#{$color-var}) / $opacity);
+}
+
+@mixin shadow($shadow-var) {
+  box-shadow: var(--#{$shadow-var});
+}
+
+// 主题感知混合器
+@mixin theme-aware($property, $light-value, $dark-value) {
+  #{$property}: #{$light-value};
+
+  .dark & {
+    #{$property}: #{$dark-value};
+  }
+}
+
+// 深色模式媒体查询混合器
+@mixin dark {
+  @media (prefers-color-scheme: dark) {
+    &:not(.light) {
+      @content;
+    }
+  }
+
+  .dark & {
+    @content;
+  }
+}
+
+// 浅色模式媒体查询混合器
+@mixin light {
+  @media (prefers-color-scheme: light) {
+    &:not(.dark) {
+      @content;
+    }
+  }
+
+  .light & {
+    @content;
+  }
+}
+
+// 组件状态混合器
+@mixin disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+
+  @include dark {
+    opacity: calc(var(--opacity-disabled) * 0.8);
+  }
+}
+
+@mixin hover {
+  transition: all var(--transition-duration) var(--transition-timing);
+
+  &:hover:not(:disabled) {
+    @content;
+  }
+}
+
+@mixin focus {
+  transition: all var(--transition-duration) var(--transition-timing);
+
+  &:focus {
+    outline: 2px solid rgb(var(--color-primary) / 0.5);
+    outline-offset: 2px;
+    @content;
+  }
+}
+
+// 布局混合器
+@mixin container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+
+  @media (min-width: 640px) {
+    padding: 0 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 0 2rem;
+  }
+}
+
+// 文字样式混合器
+@mixin text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+@mixin text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+@mixin text-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+@mixin text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+@mixin text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
