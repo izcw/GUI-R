@@ -4,9 +4,6 @@
     <main>
       <slot />
     </main>
-    <footer>
-      <Footer />
-    </footer>
   </div>
 
 </template>
@@ -17,5 +14,10 @@ import Footer from '@/layouts/components/Global/Footer.vue'
 .BlankLayout {
   width: 100%;
   height: 100%;
+
+  main {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

@@ -4,11 +4,11 @@ import CryptoJS from 'crypto-js'
 /* ========================= 类型定义 ========================= */
 /** 模拟 JWT 载荷结构 */
 export interface MockPayload {
-  sub: string // 用户唯一标识
-  name: string // 用户名
-  role: string // 角色
-  exp: number // 过期时间（Unix 秒）
-  type?: 'access' | 'refresh' // 令牌类型（可选）
+  ID: string // 用户唯一标识
+  Name: string // 用户名
+  Role: string // 角色
+  Type?: 'access' | 'refresh' // 令牌类型（可选）
+  ExpTime: number // 过期时间（Unix 秒）
   [key: string]: any // 允许任意扩展字段
 }
 
@@ -61,7 +61,7 @@ function verifyJWT(token: string, secret: string): MockPayload | null {
   try {
     const payload = JSON.parse(base64UrlDecode(parts[1])) as MockPayload
     // 过期检查
-    if (payload.exp && payload.exp < nowSeconds()) return null
+    if (payload.ExpTime && payload.ExpTime < nowSeconds()) return null
     // 签名校验
     const rebuiltSign = CryptoJS.HmacSHA256(`${parts[0]}.${parts[1]}`, secret).toString(
       CryptoJS.enc.Base64url,
@@ -75,14 +75,14 @@ function verifyJWT(token: string, secret: string): MockPayload | null {
 /* ========================= 业务函数 ========================= */
 /** 生成 accessToken（默认 1 小时） */
 export function generateMockToken(
-  payload: Omit<MockPayload, 'exp' | 'type'> & { exp?: number },
+  payload: Omit<MockPayload, 'ExpTime' | 'Type'> & { ExpTime?: number },
 ): string {
   const body: MockPayload = {
-    sub: payload.sub ?? 'anonymous',
-    name: payload.name ?? 'guest',
-    role: payload.role ?? 'user',
-    type: 'access',
-    exp: payload.exp ?? nowSeconds() + 3600,
+    ID: 'anonymous',
+    Name: 'guest',
+    Role: 'user',
+    Type: 'access',
+    ExpTime: payload.ExpTime ?? nowSeconds() + 3600,
     ...payload, // 允许覆盖/扩展
   }
   return createJWT(body, SECRET_ACCESS)
@@ -90,15 +90,14 @@ export function generateMockToken(
 
 /** 生成 refreshToken（默认 7 天） */
 export function generateMockRefreshToken(
-  payload: Pick<MockPayload, 'sub'> & Partial<Omit<MockPayload, 'sub' | 'exp' | 'type'>>,
+  payload: Pick<MockPayload, 'ID'> & Partial<Omit<MockPayload, 'ID' | 'ExpTime' | 'Type'>>,
 ): string {
   const body: MockPayload = {
-    // 1. 先把默认值写全
-    name: 'guest',
-    role: 'user',
-    type: 'refresh',
-    exp: nowSeconds() + 3600 * 24 * 7,
-    ...payload,
+    Name: 'guest',
+    Role: 'user',
+    Type: 'refresh',
+    ExpTime: nowSeconds() + 3600 * 24 * 7,
+    ...payload, // 允许覆盖/扩展
   }
   return createJWT(body, SECRET_REFRESH)
 }

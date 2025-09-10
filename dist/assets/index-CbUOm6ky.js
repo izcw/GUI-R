@@ -1,0 +1,1 @@
+import{d as a,c as s,o,e as t,_ as n}from"./index-DlWkpDUt.js";const d={class:"Upgrade"},r=a({__name:"index",setup(_){return(c,e)=>(o(),s("div",d,[...e[0]||(e[0]=[t("h1",null,"Upgrade",-1)])]))}}),i=n(r,[["__scopeId","data-v-b9aad933"]]);export{i as default};

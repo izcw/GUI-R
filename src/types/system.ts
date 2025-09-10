@@ -3,25 +3,44 @@
 import type { Component } from 'vue'
 import type { PermissionRole } from '@/types/auth'
 
+// 定义布局类型
+export type LayoutType = 'Layout-Main' | 'Layout-LeftRight' | 'Layout-Blank'
+
+// 定义页面类型
+export type PageName =
+  | 'Login'
+  | 'Control'
+  | 'Audio'
+  | 'Configuration'
+  | 'CEC'
+  | 'RS232'
+  | 'Network'
+  | 'Upgrade'
+  | 'Diagnostics'
+  | 'Admin'
+  | '404'
+  | '500'
+
 // 布局配置接口
 export interface LayoutConfig {
-  name: string // 布局名称
+  describe: string // 布局描述
   comp: Component // 对应的 Vue 组件
-  key: string // 布局的唯一标识
+  key: LayoutType // 布局的唯一标识
 }
 
 // 页面配置接口
 export interface PageConfig {
   name: string // 页面名称
   comp: Component // 对应的 Vue 组件
-  key: string // 页面的唯一标识
+  key: PageName // 页面的唯一标识
 }
 
 // 菜单项接口
 export interface MenuItem {
-  name: string // 菜单名称
-  key: string // 菜单的唯一标识
-  layout: string // 对应的布局 key
+  permsIndex?: Number // 菜单项的权限索引
+  name: PageName // 菜单名称
+  comp: Component // 对应的 Vue 组件
+  layout: LayoutConfig // 对应的布局配置
   permission?: PermissionRole[] // 访问权限，可选
   hidden?: boolean // 是否隐藏，可选
   meta?: {
@@ -39,12 +58,11 @@ export type ThemeType = 'light' | 'dark'
 
 // 系统配置接口
 export interface SystemConfig {
-  theme: ThemeType // 当前使用的主题
-  currentLayout: string // 当前使用的布局 key
-  currentPage: string // 当前显示的页面 key
-  layouts: LayoutConfig[] // 布局配置数组
-  pages: PageConfig[] // 页面配置数组
-  menus: MenuItem[] // 菜单配置数组
+  Theme: ThemeType // 当前使用的主题
+  currentLayout: LayoutType // 当前使用的布局 key
+  currentPage: PageName // 当前显示的页面 key
+  // Layouts: LayoutConfig[] // 布局配置数组
+  Menus: MenuItem[] // 菜单配置数组
 }
 
 // 存储类型

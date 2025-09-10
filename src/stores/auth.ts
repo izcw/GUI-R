@@ -10,49 +10,37 @@ import {
   type MockPayload,
 } from '@/utils/token-mock'
 
-import { useSystemStore } from '@/stores/system'
+import { useSystemStore, useUserStore } from '@/stores/index'
 
 const STORAGE_KEY: string = 'Token'
-const STORAGE_TYPE: StorageType = 'local'
+const STORAGE_TYPE: StorageType = 'session'
 
 export const useAuthStore = defineStore('auth', () => {
-  /* ---------- 状态 ---------- */
+  const UserStore = useUserStore()
+  const systemStore = useSystemStore()
+
   const accessToken = ref<string>('')
   const refreshToken = ref<string>('')
+
   const userInfo = ref<Record<string, any>>({})
+  const isLogin = computed(() => !!accessToken.value) // 是否登录
 
-  /* ---------- 计算 ---------- */
-  const isLogin = computed(() => !!accessToken.value)
-
-  // 从存储加载
-  function load() {
-    const raw = storage.get(STORAGE_KEY, STORAGE_TYPE) as any
-    if (raw) {
-      accessToken.value = raw ?? ''
-      // accessToken.value = raw.accessToken ?? ''
-      // refreshToken.value = raw.refreshToken ?? ''
-      // userInfo.value = raw.userInfo ?? {}
+  // 从存储中恢复
+  const initFromStorage = () => {
+    const stored = storage.get(STORAGE_KEY, STORAGE_TYPE) as any
+    if (stored) {
+      accessToken.value = stored ?? ''
+      // accessToken.value = stored.accessToken ?? ''
+      // refreshToken.value = stored.refreshToken ?? ''
+      // userInfo.value = stored.userInfo ?? {}
     }
   }
 
-  // // 从存储中恢复
-  // const initFromStorage = () => {
-  //   // 明确检查存储类型
-  //   if (STORAGE_TYPE === 'local' || STORAGE_TYPE === 'session') {
-  //     const stored = storage.get(STORAGE_KEY, STORAGE_TYPE)
-  //     if (stored) {
-  //       accessToken.value = stored
-  //       console.log('你好', accessToken.value)
-  //     }
-  //   }
-  // }
-
-  /* ---------- 内部工具 ---------- */
-  function save() {
+  // 保存到存储
+  const saveToStorage = () => {
     storage.set(
       STORAGE_KEY,
       accessToken.value,
-
       // {
       //   accessToken: accessToken.value,
       //   refreshToken: refreshToken.value,
@@ -62,68 +50,63 @@ export const useAuthStore = defineStore('auth', () => {
     )
   }
 
-  /* ---------- 动作 ---------- */
-  function login(payload: { username: string; role: string }) {
-    /* --- 防重复登录 --- */
+  // 登录
+  const Login = (payload: { username: string; role: string }) => {
+    // 防重复设置Token
     if (accessToken.value && parseMockToken(accessToken.value)) {
       console.warn(
-        `[AuthStore] 已登录，禁止重复登录（当前用户：${payload.username}）（${payload.role}）`,
+        `[AuthStore] 已登录，不用重新生成Token（当前用户：${payload.username}）（${payload.role}）`,
       )
-      return
+    } else {
+      // 设置Token
+      const UserID = String(Date.now()) // 模拟用户 id
+      let exptime = Math.floor(Date.now() / 1000) + 30 * 60 //   1分钟后过期（测试用）
+      accessToken.value = generateMockToken({
+        ID: 'ID' + UserID,
+        Name: payload.username,
+        Role: payload.role ?? 'user',
+        ExpTime: exptime,
+      })
     }
 
-    // login(username: string, role?: string) { --- IGNORE ---
-    const sub = String(Date.now()) // 模拟用户 id
-    let exptime = Math.floor(Date.now() / 1000) + 10 // 30 秒后过期（测试用）
-    accessToken.value = generateMockToken({
-      sub: 'ID' + sub,
-      name: payload.username,
-      role: payload.role ?? 'user',
-      exp: exptime,
-    })
-    // refreshToken.value = generateMockRefreshToken({ sub })
-    // userInfo.value = { username: payload.username, role: payload.role ?? 'user' }
-
-    const expireDate = new Date(exptime).toLocaleString()
-    console.log(`[AuthStore] 登录成功！用户：${payload.username}（${payload.role}）`)
-    console.log(`[AuthStore] 过期时间：${expireDate}（UTC+8）`)
-    save()
+    UserStore.saveToStorage()
+    systemStore.navigateTo(UserStore.Menus[0].name) // 自动导航至第一个菜单
+    saveToStorage()
   }
 
-  const systemStore = useSystemStore()
-
-  function logout() {
+  // 退出登录
+  const Logout = () => {
     accessToken.value = ''
     refreshToken.value = ''
     userInfo.value = {}
     storage.remove(STORAGE_KEY, STORAGE_TYPE)
+    storage.remove('UserInfo', STORAGE_TYPE)
 
-    systemStore.setCurrentPage('Page-Login', 'Layout-Blank')
+    systemStore.navigateTo('Login')
   }
 
   /** 静默刷新 accessToken（前端自己玩） */
-  function refreshAccessToken() {
+  const refreshAccessToken = () => {
     const payload = parseMockToken(refreshToken.value)
-    if (!payload) return logout()
+    if (!payload) return Logout()
     accessToken.value = generateMockToken({
-      sub: payload.sub,
-      name: userInfo.value.username,
-      role: userInfo.value.role,
+      ID: payload.ID,
+      Name: userInfo.value.username,
+      Role: userInfo.value.role,
     })
-    save()
+    saveToStorage()
   }
 
-  /* ---------- 初始化 ---------- */
-  // initFromStorage()
-  load()
+  // 初始化
+  initFromStorage()
 
   return {
     accessToken,
     refreshToken,
     userInfo,
     isLogin,
-    login,
-    logout,
+    Login,
+    Logout,
     refreshAccessToken,
   }
 })

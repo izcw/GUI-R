@@ -1,32 +1,165 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/index.vue'
+import type { LayoutConfig, MenuItem, SystemConfig } from '@/types/system'
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      component: HomeView,
-      // component: () => import('@/layouts/LayoutResolver.vue'),
-      // children: [
-      //   {
-      //     path: '',
-      //     component: () => import('@/views/About/index.vue'),
-      //     meta: { layout: 'main' },
-      //   },
-      //   {
-      //     path: '/settings',
-      //     component: () => import('@/views/User/index.vue'),
-      //     meta: { layout: 'leftRight' },
-      //   },
-      //   {
-      //     path: '/login',
-      //     component: () => import('@/views/login/index.vue'),
-      //     meta: { layout: 'blank' },
-      //   },
-      // ],
+// 图标基础路径
+const ICON_BASE_PATH = '/src/assets/icon/menu/'
+
+// 创建布局配置数组
+const Layout_Main: LayoutConfig = {
+  comp: () => import('@/layouts/Layout-Main.vue'),
+  key: 'Layout-Main',
+  describe: '主布局',
+}
+const Layout_LeftRight: LayoutConfig = {
+  comp: () => import('@/layouts/Layout-LeftRight.vue'),
+  key: 'Layout-LeftRight',
+  describe: '左右布局',
+}
+const Layout_Blank: LayoutConfig = {
+  comp: () => import('@/layouts/Layout-Blank.vue'),
+  key: 'Layout-Blank',
+  describe: '空白布局',
+}
+
+let DefaultLayout: LayoutConfig = Layout_Main // 默认布局
+
+// 创建菜单配置数组
+const menuConfigs: MenuItem[] = [
+  {
+    permsIndex: 0, // 权限索引 ['1', '1', '0', '1', '0', '1', '1', '1', '1']
+    name: 'Control',
+    comp: () => import('@/views/Control/index.vue'),
+    layout: DefaultLayout,
+    permission: ['admin', 'user', 'guest'],
+    hidden: false,
+    meta: {
+      icon: `${ICON_BASE_PATH}home.svg`,
+      icon_active: `${ICON_BASE_PATH}more-active.svg`,
     },
-  ],
-})
+  },
+  {
+    permsIndex: 1,
+    name: 'Audio',
+    comp: () => import('@/views/Audio/index.vue'),
+    layout: DefaultLayout,
+    permission: ['admin', 'user', 'guest'],
+    meta: {
+      icon: `${ICON_BASE_PATH}user.svg`,
+      icon_active: `${ICON_BASE_PATH}more-active.svg`,
+    },
+  },
+  {
+    permsIndex: 2,
+    name: 'Configuration',
+    comp: () => import('@/views/Configuration/index.vue'),
+    layout: DefaultLayout,
+    permission: ['admin', 'user', 'guest'],
+    meta: {
+      icon: `${ICON_BASE_PATH}user.svg`,
+      icon_active: `${ICON_BASE_PATH}more-active.svg`,
+    },
+  },
+  {
+    permsIndex: 3,
+    name: 'CEC',
+    comp: () => import('@/views/CEC/index.vue'),
+    layout: DefaultLayout,
+    permission: ['admin', 'user'],
+    meta: {
+      icon: `${ICON_BASE_PATH}user.svg`,
+      icon_active: `${ICON_BASE_PATH}more-active.svg`,
+    },
+  },
+  {
+    permsIndex: 4,
+    name: 'RS232',
+    comp: () => import('@/views/RS-232/index.vue'),
+    layout: DefaultLayout,
+    permission: ['admin', 'user'],
+    meta: {
+      icon: `${ICON_BASE_PATH}user.svg`,
+      icon_active: `${ICON_BASE_PATH}more-active.svg`,
+    },
+  },
+  {
+    permsIndex: 5,
+    name: 'Network',
+    comp: () => import('@/views/Network/index.vue'),
+    layout: DefaultLayout,
+    permission: ['admin', 'user'],
+    meta: {
+      icon: `${ICON_BASE_PATH}user.svg`,
+      icon_active: `${ICON_BASE_PATH}more-active.svg`,
+    },
+  },
+  {
+    permsIndex: 6,
+    name: 'Upgrade',
+    comp: () => import('@/views/Upgrade/index.vue'),
+    layout: DefaultLayout,
+    permission: ['admin', 'user'],
+    meta: {
+      icon: `${ICON_BASE_PATH}user.svg`,
+      icon_active: `${ICON_BASE_PATH}more-active.svg`,
+    },
+  },
+  {
+    permsIndex: 7,
+    name: 'Diagnostics',
+    comp: () => import('@/views/Diagnostics/index.vue'),
+    layout: DefaultLayout,
+    permission: ['admin', 'user'],
+    meta: {
+      icon: `${ICON_BASE_PATH}user.svg`,
+      icon_active: `${ICON_BASE_PATH}more-active.svg`,
+    },
+  },
+  {
+    permsIndex: 8,
+    name: 'Admin',
+    comp: () => import('@/views/Admin/index.vue'),
+    layout: DefaultLayout,
+    permission: ['admin', 'user'],
+    meta: {
+      icon: `${ICON_BASE_PATH}user.svg`,
+      icon_active: `${ICON_BASE_PATH}more-active.svg`,
+    },
+  },
+  {
+    name: 'Login',
+    comp: () => import('@/views/Login/index.vue'),
+    layout: Layout_Blank,
+    permission: ['admin', 'user', 'guest'],
+    meta: {
+      icon: `${ICON_BASE_PATH}user.svg`,
+      icon_active: `${ICON_BASE_PATH}more-active.svg`,
+    },
+  },
+  {
+    name: '404',
+    comp: () => import('@/views/Errors/404.vue'),
+    layout: Layout_Blank,
+    permission: ['admin', 'user', 'guest'],
+    meta: {
+      icon: `${ICON_BASE_PATH}user.svg`,
+      icon_active: `${ICON_BASE_PATH}more-active.svg`,
+    },
+  },
+  {
+    name: '500',
+    comp: () => import('@/views/Errors/500.vue'),
+    layout: Layout_Blank,
+    permission: ['admin', 'user', 'guest'],
+    meta: {
+      icon: `${ICON_BASE_PATH}user.svg`,
+      icon_active: `${ICON_BASE_PATH}more-active.svg`,
+    },
+  },
+]
 
-export default router
+// 导出系统配置
+export const systemConfig: SystemConfig = {
+  Theme: 'dark', // 默认主题 dark | light
+  currentLayout: 'Layout-Main', // 默认布局
+  currentPage: 'Login', // 默认页面
+  Menus: menuConfigs, // 菜单配置
+}

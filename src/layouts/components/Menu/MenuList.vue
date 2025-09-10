@@ -1,8 +1,7 @@
 <template>
-  <li class="item" v-for="item in UserStore.UserMenus" :key="item.key"
-    :class="{ 'active': systemStore.config.currentPage === item.key }"
-    @click="systemStore.setCurrentPage(item.key, item.layout)">
-    <img :src="systemStore.config.currentPage === item.key ? item.meta?.icon_active : item.meta?.icon" alt="">
+  <li class="item" v-for="item in UserStore.UserMenus" :key="item.name"
+    :class="{ 'active': systemStore.config.currentPage === item.name }" @click="systemStore.navigateTo(item.name)">
+    <img :src="systemStore.config.currentPage === item.name ? item.meta?.icon_active : item.meta?.icon" alt="">
     {{ item.name }}
   </li>
 </template>

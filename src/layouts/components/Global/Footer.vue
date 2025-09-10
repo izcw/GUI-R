@@ -7,21 +7,12 @@
           {{ systemStore.isDark ? '☀️ 浅色' : '🌙 深色' }}
         </button>
       </div>
-      <!-- ① 布局切换 -->
-      <div class="layout-switch">
-        <nav class="nav">
-          <button v-for="layout in systemStore.layouts" :key="layout.key"
-            :class="{ active: systemStore.config.currentLayout === layout.key }"
-            @click="systemStore.setCurrentLayout(layout.key)">
-            {{ layout.name }}
-          </button>
-        </nav>
-      </div>
-      <div>
-        <button @click="authStore.logout">
-          退出登录
-        </button>
-      </div>
+      <button @click="authStore.Logout">
+        退出登录
+      </button>
+
+      <button @click="systemStore.navigateBack()">后退</button>
+      <button @click="systemStore.navigateForward()">前进</button>
     </div>
   </div>
 </template>

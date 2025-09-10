@@ -10,11 +10,13 @@ self.onmessage = ({ data }: { data: { token: string } }) => {
     const p = parseMockToken(data.token)
     const now = new Date().toLocaleTimeString()
     if (!p) {
-      console.warn(`[Worker ${now}] 无效或过期 → 通知主线程 expire`)
+      console.log(`[Token-Worker检查 ${now}] 无效或过期 → 通知主线程 expire`)
       self.postMessage('expire')
       if (timer) clearInterval(timer)
     } else {
-      console.log(`[Worker ${now}] 检查通过，过期 ${new Date(p.exp * 1000).toLocaleTimeString()}`)
+      console.log(
+        `[Token-Worker检查 ${now}] 检查通过，过期 ${new Date(p.ExpTime * 1000).toLocaleTimeString()}`,
+      )
     }
   }
 

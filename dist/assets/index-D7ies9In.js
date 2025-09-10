@@ -1,0 +1,1 @@
+import{d as o,c as t,o as s,e as a,_ as n}from"./index-DlWkpDUt.js";const r={class:"Network"},_=o({__name:"index",setup(c){return(d,e)=>(s(),t("div",r,[...e[0]||(e[0]=[a("h1",null,"Network",-1)])]))}}),i=n(_,[["__scopeId","data-v-c6d1ea14"]]);export{i as default};

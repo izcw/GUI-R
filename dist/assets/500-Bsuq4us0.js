@@ -1,0 +1,1 @@
+import{_ as s,c as o,o as t,e as r}from"./index-DlWkpDUt.js";const n={},c={class:"server-error"};function a(_,e){return t(),o("div",c,[...e[0]||(e[0]=[r("h1",null,"500 - 服务器错误",-1),r("p",null,"服务器遇到了一个错误。",-1)])])}const d=s(n,[["render",a]]);export{d as default};

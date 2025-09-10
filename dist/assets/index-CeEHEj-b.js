@@ -1,0 +1,1 @@
+import{d as o,c as s,o as t,e as a,_ as n}from"./index-DlWkpDUt.js";const _={class:"Audio"},d=o({__name:"index",setup(c){return(r,e)=>(t(),s("div",_,[...e[0]||(e[0]=[a("h1",null,"Audio",-1)])]))}}),p=n(d,[["__scopeId","data-v-fe2aefb4"]]);export{p as default};

@@ -1,0 +1,1 @@
+import{d as s,c as o,o as t,e as a,_ as n}from"./index-DlWkpDUt.js";const _={class:"CEC"},c=s({__name:"index",setup(r){return(d,e)=>(t(),o("div",_,[...e[0]||(e[0]=[a("h1",null,"CEC",-1)])]))}}),i=n(c,[["__scopeId","data-v-afc3a014"]]);export{i as default};
