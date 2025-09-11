@@ -3,7 +3,7 @@ import '@/styles/main.scss'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { startTokenWorker } from '@/composables/useTokenWorker'
-// import { UserActivityMonitor } from '@/config/userActivityMonitor' // 引入用户活动监控模块;
+import { UserActivityMonitor } from '@/config/userActivityMonitor' // 引入用户活动监控模块;
 
 import App from './App.vue'
 
@@ -11,12 +11,12 @@ const app = createApp(App)
 
 // // 配置用户活动监听器
 // const activityMonitor = new UserActivityMonitor({
-//   inactiveTimeout: 1 * 60 * 1000, // 30分钟超时
+//   inactiveTimeout: 0.5 * 60 * 1000, // 30分钟超时
 //   checkInterval: 5000, // 5秒检查一次
 //   logEnabled: true, // 开启日志
 //   onTimeout: () => {
 //     // 超时处理逻辑
-//     console.warn('会话超时处理')
+//     console.warn('[活动监听] 会话超时处理')
 //     // 这里可以添加跳转登录页、显示提示框等逻辑
 //   },
 // })

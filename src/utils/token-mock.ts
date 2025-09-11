@@ -1,6 +1,3 @@
-// src/utils/token-mock.ts
-import CryptoJS from 'crypto-js'
-
 /* ========================= 类型定义 ========================= */
 /** 模拟 JWT 载荷结构 */
 export interface MockPayload {
@@ -34,19 +31,39 @@ function nowSeconds(): number {
   return Math.floor(Date.now() / 1000)
 }
 
+/** 使用 Web Crypto API 计算 HMAC-SHA256 */
+async function hmacSha256(message: string, secret: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  )
+
+  const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(message))
+
+  const bytes = new Uint8Array(signature)
+  let binary = ''
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+}
+
 /* ========================= 公共逻辑 ========================= */
 /**
  * 创建 JWT 字符串（Header.Payload.Signature）
  * @param payload  载荷对象
  * @param secret   签名密钥
  */
-function createJWT(payload: MockPayload, secret: string): string {
+async function createJWT(payload: MockPayload, secret: string): Promise<string> {
   const header = { alg: 'HS256', typ: 'JWT' }
   const encodedHeader = base64UrlEncode(JSON.stringify(header))
   const encodedPayload = base64UrlEncode(JSON.stringify(payload))
-  const signature = CryptoJS.HmacSHA256(`${encodedHeader}.${encodedPayload}`, secret).toString(
-    CryptoJS.enc.Base64url,
-  )
+  const signature = await hmacSha256(`${encodedHeader}.${encodedPayload}`, secret)
   return `${encodedHeader}.${encodedPayload}.${signature}`
 }
 
@@ -55,7 +72,7 @@ function createJWT(payload: MockPayload, secret: string): string {
  * @param token  原始 JWT 字符串
  * @param secret 签名密钥（根据 type 选择）
  */
-function verifyJWT(token: string, secret: string): MockPayload | null {
+async function verifyJWT(token: string, secret: string): Promise<MockPayload | null> {
   const parts = token.split('.')
   if (parts.length !== 3) return null
   try {
@@ -63,9 +80,7 @@ function verifyJWT(token: string, secret: string): MockPayload | null {
     // 过期检查
     if (payload.ExpTime && payload.ExpTime < nowSeconds()) return null
     // 签名校验
-    const rebuiltSign = CryptoJS.HmacSHA256(`${parts[0]}.${parts[1]}`, secret).toString(
-      CryptoJS.enc.Base64url,
-    )
+    const rebuiltSign = await hmacSha256(`${parts[0]}.${parts[1]}`, secret)
     return rebuiltSign === parts[2] ? payload : null
   } catch {
     return null
@@ -73,10 +88,10 @@ function verifyJWT(token: string, secret: string): MockPayload | null {
 }
 
 /* ========================= 业务函数 ========================= */
-/** 生成 accessToken（默认 1 小时） */
-export function generateMockToken(
+/** 生成访问令牌 accessToken（默认 1 小时） */
+export async function generateMockToken(
   payload: Omit<MockPayload, 'ExpTime' | 'Type'> & { ExpTime?: number },
-): string {
+): Promise<string> {
   const body: MockPayload = {
     ID: 'anonymous',
     Name: 'guest',
@@ -88,10 +103,10 @@ export function generateMockToken(
   return createJWT(body, SECRET_ACCESS)
 }
 
-/** 生成 refreshToken（默认 7 天） */
-export function generateMockRefreshToken(
+/** 生成刷新令牌 refreshToken（默认 7 天） */
+export async function generateMockRefreshToken(
   payload: Pick<MockPayload, 'ID'> & Partial<Omit<MockPayload, 'ID' | 'ExpTime' | 'Type'>>,
-): string {
+): Promise<string> {
   const body: MockPayload = {
     Name: 'guest',
     Role: 'user',
@@ -103,16 +118,22 @@ export function generateMockRefreshToken(
 }
 
 /** 统一解析入口（自动根据 type 选密钥） */
-export function parseMockToken(token: string): MockPayload | null {
+export async function parseMockToken(token: string): Promise<MockPayload | null> {
   // 先轻量解析出 payload 拿 type
   const parts = token.split('.')
+
   if (parts.length !== 3) return null
   try {
     const payload = JSON.parse(base64UrlDecode(parts[1])) as MockPayload
-    const secret = payload.type === 'refresh' ? SECRET_REFRESH : SECRET_ACCESS
+
+    // 处理 Type 可能未定义的情况
+    const tokenType = payload.Type || 'access' // 默认为 access
+
+    const secret = tokenType === 'refresh' ? SECRET_REFRESH : SECRET_ACCESS
     // 重新验签
-    return verifyJWT(token, secret)
-  } catch {
+    return await verifyJWT(token, secret)
+  } catch (error) {
+    console.error('[Token令牌] 解析令牌出错:', error)
     return null
   }
 }

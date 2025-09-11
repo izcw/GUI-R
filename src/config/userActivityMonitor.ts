@@ -1,5 +1,5 @@
-// config/userActivityMonitor.ts
 import { onMounted, onUnmounted } from 'vue'
+import { appConfig } from './appConfig'
 
 // 用户活动类型定义
 type ActivityType = 'mousemove' | 'keydown' | 'click' | 'scroll' | 'checkActivity'
@@ -31,13 +31,13 @@ export class UserActivityMonitor {
   private activityLogs: ActivityLog[]
   private checkIntervalId: ReturnType<typeof setInterval> | null
   private isActive: boolean
-  private isTimedOut: boolean // 新增：超时状态标志
+  private isTimedOut: boolean // 超时状态标志
 
   constructor(options: ActivityMonitorOptions = {}) {
-    // 默认配置：30分钟超时，5秒检查间隔
-    this.inactiveTimeout = options.inactiveTimeout || 30 * 60 * 1000
-    this.checkInterval = options.checkInterval || 5000
-    this.logEnabled = options.logEnabled ?? true
+    // 从应用配置读取默认值
+    this.inactiveTimeout = options.inactiveTimeout || appConfig.ACTIVITY_SessionTimeout
+    this.checkInterval = options.checkInterval || appConfig.ACTIVITY_CheckInterval
+    this.logEnabled = options.logEnabled ?? appConfig.ACTIVITY_logEnabled
     this.onTimeout = options.onTimeout
 
     // 初始化状态
@@ -53,10 +53,21 @@ export class UserActivityMonitor {
   }
 
   /**
-   * 启动活动监听
+   * 启动活动监听（幂等操作）
+   * 支持在超时后重新启动
    */
   public start(): void {
-    if (this.checkIntervalId || this.isTimedOut) return
+    // 如果已经启动，则不再启动
+    if (this.checkIntervalId !== null) {
+      this.logActivity('checkActivity', '活动监听已启动（无需重复启动）')
+      return
+    }
+
+    // 如果已超时，重置超时状态
+    if (this.isTimedOut) {
+      this.logActivity('checkActivity', '重置超时状态并重新启动')
+      this.isTimedOut = false
+    }
 
     // 添加事件监听
     window.addEventListener('mousemove', this.handleActivity)
@@ -67,15 +78,23 @@ export class UserActivityMonitor {
     // 启动定时检查
     this.checkIntervalId = setInterval(this.checkActivity, this.checkInterval)
 
+    // 重置活动状态
+    this.lastActivityTime = Date.now()
+    this.isActive = true
+
     // 记录启动日志
     this.logActivity('checkActivity', '用户活动监听已启动')
   }
 
   /**
-   * 停止活动监听
+   * 停止活动监听（幂等操作）
    */
   public stop(): void {
-    if (!this.checkIntervalId) return
+    // 如果已经停止，则不再执行
+    if (this.checkIntervalId === null) {
+      this.logActivity('checkActivity', '活动监听已停止（无需重复停止）')
+      return
+    }
 
     // 移除事件监听
     window.removeEventListener('mousemove', this.handleActivity)
@@ -112,12 +131,12 @@ export class UserActivityMonitor {
     if (this.isTimedOut) return // 超时后不再检查
 
     const now = Date.now()
-    const inactiveDuration = now - this.lastActivityTime
+    const inactiveDuration = now - this.lastActivityTime // 当前空闲时间
 
     // 记录检查日志
     this.logActivity(
       'checkActivity',
-      `活动检查 | 空闲时间: ${Math.round(inactiveDuration / 1000)}秒 | 状态: ${this.isActive ? '活跃' : '空闲'}`,
+      `活动检查 | 空闲时间: ${Math.round(inactiveDuration / 1000)}/${Math.round(this.inactiveTimeout / 1000)}秒 | 状态: ${this.isActive ? '活跃' : '空闲'}`,
     )
 
     // 检测超时
@@ -133,7 +152,7 @@ export class UserActivityMonitor {
       if (this.onTimeout) {
         this.onTimeout()
       } else {
-        console.warn('会话超时警告: 用户长时间无操作')
+        console.warn('[活动监听] 会话超时警告: 用户长时间无操作')
       }
     }
   }
@@ -142,6 +161,8 @@ export class UserActivityMonitor {
    * 记录活动日志
    */
   private logActivity(type: ActivityType, message: string): void {
+    if (!this.logEnabled) return // 如果日志禁用，直接返回
+
     const logEntry: ActivityLog = {
       timestamp: Date.now(),
       type,
@@ -150,10 +171,8 @@ export class UserActivityMonitor {
 
     this.activityLogs.push(logEntry)
 
-    if (this.logEnabled) {
-      const timeStr = new Date(logEntry.timestamp).toLocaleTimeString()
-      console.log(`[${timeStr}] ${logEntry.message}`)
-    }
+    const timeStr = new Date(logEntry.timestamp).toLocaleTimeString()
+    console.log(`[活动监听 ${timeStr}] ${logEntry.message}`)
   }
 
   /**
@@ -182,14 +201,52 @@ export class UserActivityMonitor {
    * 获取当前活动状态
    */
   public getActivityStatus(): {
+    isRunning: boolean
     isActive: boolean
     inactiveDuration: number
     isTimedOut: boolean
+    logEnabled: boolean
+    inactiveTimeout: number
+    checkInterval: number
   } {
     return {
+      isRunning: this.checkIntervalId !== null,
       isActive: this.isActive,
       inactiveDuration: Date.now() - this.lastActivityTime,
       isTimedOut: this.isTimedOut,
+      logEnabled: this.logEnabled,
+      inactiveTimeout: this.inactiveTimeout,
+      checkInterval: this.checkInterval,
+    }
+  }
+
+  /**
+   * 动态更新日志设置
+   */
+  public setLogEnabled(enabled: boolean): void {
+    this.logEnabled = enabled
+    this.logActivity('checkActivity', `日志设置已更新: ${enabled ? '启用' : '禁用'}`)
+  }
+
+  /**
+   * 更新超时时间
+   */
+  public updateInactiveTimeout(timeout: number): void {
+    this.inactiveTimeout = timeout
+    this.logActivity('checkActivity', `超时时间已更新: ${timeout / 1000}秒`)
+  }
+
+  /**
+   * 更新检查间隔
+   */
+  public updateCheckInterval(interval: number): void {
+    this.checkInterval = interval
+    this.logActivity('checkActivity', `检查间隔已更新: ${interval}毫秒`)
+
+    // 如果正在运行，需要重启定时器
+    if (this.checkIntervalId) {
+      this.stop()
+      this.start()
     }
   }
 }
@@ -210,26 +267,10 @@ export function useUserActivityMonitor(options?: ActivityMonitorOptions) {
     getActivityLogs: monitor.getActivityLogs.bind(monitor),
     resetTimer: monitor.resetTimer.bind(monitor),
     getActivityStatus: monitor.getActivityStatus.bind(monitor),
+    start: monitor.start.bind(monitor),
+    stop: monitor.stop.bind(monitor),
+    setLogEnabled: monitor.setLogEnabled.bind(monitor),
+    updateInactiveTimeout: monitor.updateInactiveTimeout.bind(monitor),
+    updateCheckInterval: monitor.updateCheckInterval.bind(monitor),
   }
 }
-
-// // 在用户执行重要操作后重置计时器
-// function submitForm() {
-//   // 表单提交逻辑...
-
-//   // 重置活动计时器
-//   this.$activityMonitor.resetTimer();
-// }
-
-// // 在路由守卫中检查活动状态
-// router.beforeEach((to, from, next) => {
-//   const monitor = app.config.globalProperties.$activityMonitor;
-//   const { isActive, inactiveDuration } = monitor.getActivityStatus();
-
-//   if (!isActive && to.meta.requiresAuth) {
-//     // 用户会话超时，重定向到登录页
-//     next('/login');
-//   } else {
-//     next();
-//   }
-// });

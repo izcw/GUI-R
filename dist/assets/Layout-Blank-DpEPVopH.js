@@ -1,1 +1,0 @@
-import{d as a,c as o,o as t,e as s,i as n,_ as c}from"./index-DlWkpDUt.js";/* empty css                                                               */const r={class:"BlankLayout"},_=a({__name:"Layout-Blank",setup(l){return(e,d)=>(t(),o("div",r,[s("main",null,[n(e.$slots,"default",{},void 0)])]))}}),u=c(_,[["__scopeId","data-v-b0beec12"]]);export{u as default};

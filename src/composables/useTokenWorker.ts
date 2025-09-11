@@ -16,7 +16,10 @@ export function startTokenWorker() {
       return
     }
 
-    console.log('[Token-Worker主线程] 创建新 Worker，传入 Token=' + tk.slice(-20) + '...')
+    // 确保 tk 是字符串
+    const tokenString = typeof tk === 'string' ? tk : String(tk)
+
+    console.log('[Token-Worker主线程] 创建新 Worker，传入 Token=' + tokenString.slice(-20) + '...')
     worker = new Worker()
     worker.onmessage = ({ data }) => {
       if (data === 'expire') {
@@ -24,15 +27,15 @@ export function startTokenWorker() {
         authStore.Logout()
       }
     }
-    worker.postMessage({ token: tk })
+    worker.postMessage({ token: tokenString })
   }
 
-  // 首次启动
-  run(authStore.accessToken)
+  // 首次启动 - 确保传入字符串
+  run(typeof authStore.accessToken === 'string' ? authStore.accessToken : '')
 
   // token 变化时重启
   authStore.$subscribe((_, state) => {
     console.log('[Token-Worker主线程] token 变化，重新启动 Worker')
-    run(state.accessToken)
+    run(typeof state.accessToken === 'string' ? state.accessToken : '')
   })
 }

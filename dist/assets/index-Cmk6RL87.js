@@ -1,1 +1,0 @@
-import{d as o,c as n,o as t,e as s,_ as a}from"./index-DlWkpDUt.js";const r={class:"Configuration"},_=o({__name:"index",setup(c){return(i,e)=>(t(),n("div",r,[...e[0]||(e[0]=[s("h1",null,"Configuration",-1)])]))}}),p=a(_,[["__scopeId","data-v-572ec7f6"]]);export{p as default};

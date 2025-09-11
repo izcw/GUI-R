@@ -1,45 +1,27 @@
 # GUI-R
 
-This template should help get you started developing with Vue 3 in Vite.
+重构GUI程序
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+## 下载依赖
 
 ```sh
 pnpm install
 ```
 
-### Compile and Hot-Reload for Development
+### 开发预览
 
 ```sh
 pnpm dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### 打包
 
 ```sh
 pnpm build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+## Token
 
-```sh
-pnpm test:unit
-```
+### 令牌生命周期示例
 
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-pnpm lint
-```
+![令牌生命周期示例](https://picserver.duoyu.link/picfile/image/202509/11-1757570856814.png "Magic Gardens")
