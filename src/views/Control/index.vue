@@ -1,5 +1,6 @@
 <template>
   <div class="Control">
+
     <h1>Control</h1>
     <TitleCard title="Matrix">
       你好
@@ -19,6 +20,8 @@ import TitleCard from '@/components/Style-FSC/TitleCard.vue'
 import { useSystemStore, useAuthStore } from '@/stores/index'
 const systemStore = useSystemStore();
 const AuthStore = useAuthStore();
+
+
 </script>
 <style scoped lang="scss">
 .Control {}

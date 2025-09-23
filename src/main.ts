@@ -4,10 +4,13 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { startTokenWorker } from '@/composables/useTokenWorker'
 import { UserActivityMonitor } from '@/config/userActivityMonitor' // 引入用户活动监控模块;
+import Message from '@/components/Element-PTN/Dialog/Message.vue' // 引入全局组件
 
 import App from './App.vue'
 
 const app = createApp(App)
+
+app.component('Message', Message) // 全局注册组件
 
 // // 配置用户活动监听器
 // const activityMonitor = new UserActivityMonitor({

@@ -1,16 +1,35 @@
 <template>
+  <!-- <div @click="dialogVisible = true">dialogVisible</div> -->
+  <!-- <ptn-dialog v-model="dialogVisible" title="HTML 1" width="400px" height="200px" :closable="true">
+    <div>
+      你好
+    </div>
+    <template #footer>
+      <button @click="dialogVisible = false">取消</button>
+      <button @click="dialogVisible = false">确定</button>
+    </template>
+</ptn-dialog> -->
+  <!-- <ptn-dialog v-model="dialogVisible" width="400px" height="200px" center>
+    Please enter TriggerName before selecting command.
+  </ptn-dialog> -->
+
+
   <div class="Login">
-    <div class="Form-box">
-      <h1>Login</h1>
-      <input type="text" v-model="UserName" placeholder="用户名" @blur="validate('username')"
-        :class="{ error: errors.username }">
-      <div v-if="errors.username" class="error-message">{{ errors.username }}</div>
-      <input type="password" v-model="Password" placeholder="密码" @blur="validate('password')"
-        :class="{ error: errors.password }">
-      <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
-      <button @click="LoginSubmit">
-        登录
-      </button>
+    <div class="Login-box">
+      <div class="title">
+        <h1>LOGIN</h1>
+      </div>
+      <div class="Form-box">
+        <input type="text" v-model="UserName" placeholder="用户名" @blur="validate('username')"
+          :class="{ error: errors.username }">
+        <div v-if="errors.username" class="error-message">{{ errors.username }}</div>
+        <input type="password" v-model="Password" placeholder="密码" @blur="validate('password')"
+          :class="{ error: errors.password }">
+        <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
+        <button @click="LoginSubmit">
+          登录
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -18,6 +37,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useAuthStore } from '@/stores/index';
+//
+import ptnDialog from '@/components/Element-PTN/Dialog/index.vue'
+const dialogVisible = ref(true);
+//
 
 const authStore = useAuthStore();
 
@@ -79,48 +102,71 @@ const LoginSubmit = () => {
 .Login {
   width: 100%;
   height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  align-content: space-around;
+  overflow: auto;
 
-  .Form-box {
-    width: 400px;
-    height: 500px;
-    padding: 1rem;
-    box-sizing: border-box;
+  .Login-box {
+    width: 350px;
+    height: 450px;
+    min-width: 350px;
+    min-height: 450px;
+
     background-color: #2d3441;
     border-radius: 6px;
 
     display: flex;
     flex-direction: column;
+    align-items: center;
 
-    input {
-      margin-bottom: 1rem;
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+    .title {
+      width: 100%;
+      height: 60px;
+      background-color: #424954;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      box-sizing: border-box;
     }
 
-    .error {
-      border-color: red;
-    }
+    .Form-box {
+      padding: 1rem;
+      box-sizing: border-box;
 
-    .error-message {
-      color: red;
-      font-size: 12px;
-      margin-bottom: 1rem;
-    }
+      input {
+        width: 100%;
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
 
-    button {
-      padding: 0.5rem 1rem;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+      .error {
+        border-color: red;
+      }
 
-      &:hover {
-        background-color: #0056b3;
+      .error-message {
+        color: red;
+        font-size: 12px;
+        margin-bottom: 1rem;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #0056b3;
+        }
       }
     }
   }

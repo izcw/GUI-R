@@ -27,6 +27,7 @@ import { useSystemStore } from '@/stores/index';
 const systemStore = useSystemStore();
 import { UserActivityMonitor } from '@/config/userActivityMonitor'
 
+
 // 配置用户活动监听器
 const activityMonitor = new UserActivityMonitor({
   onTimeout: () => {

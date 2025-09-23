@@ -10,6 +10,9 @@
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
     "test:unit": "vitest",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
@@ -45,6 +48,7 @@
     "vite": "^7.0.6",
     "vite-plugin-imagemin": "^0.6.1",
     "vite-plugin-vue-devtools": "^8.0.0",
+    "vitepress": "2.0.0-alpha.12",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.0.4"
   }
