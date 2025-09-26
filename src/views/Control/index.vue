@@ -1,7 +1,6 @@
 <template>
   <div class="Control">
 
-    <h1>Control</h1>
     <TitleCard title="Matrix">
       你好
     </TitleCard>
@@ -9,7 +8,7 @@
       你好
     </TitleCard>
 
-    <button @click="systemStore.navigateTo('404')">点击</button>
+    <button @click="routerStore.navigateTo('404')">点击</button>
 
     <button @click="AuthStore.refreshAccessToken()">刷新Token</button>
   </div>
@@ -17,8 +16,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import TitleCard from '@/components/Style-FSC/TitleCard.vue'
-import { useSystemStore, useAuthStore } from '@/stores/index'
-const systemStore = useSystemStore();
+import { useRouterStore, useAuthStore } from '@/stores/index'
+const routerStore = useRouterStore();
 const AuthStore = useAuthStore();
 
 

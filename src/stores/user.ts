@@ -1,9 +1,10 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import type { SystemConfig, StorageType, MenuItem } from '@/types/system'
+import type { StorageType } from '@/types/system'
+import type { SystemRouter, MenuItem } from '@/types/router'
 import { storage } from '@/utils/storage'
 import type { PermissionRole, UserMenuPerms } from '@/types/auth'
-import { systemConfig } from '@/router/index.ts'
+import { SystemRouterData } from '@/router/index.ts'
 import {
   generateMockToken,
   generateMockRefreshToken,
@@ -16,7 +17,7 @@ const STORAGE_KEY = 'UserInfo' // 存储的键名
 const STORAGE_TYPE: StorageType = 'session' // 存储类型
 
 export const useUserStore = defineStore('user', () => {
-  const config = ref<SystemConfig>(systemConfig)
+  const config = ref<SystemRouter>(SystemRouterData)
   const Menus = computed(() => config.value.Menus) // 源始菜单
 
   const UserPermissionRole: PermissionRole = 'admin' // 可以是 'user', 'admin', 'guest'

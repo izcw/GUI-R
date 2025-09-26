@@ -1,6 +1,5 @@
 <template>
   <div class="Network">
-    <h1>Network</h1>
   </div>
 </template>
 <script setup lang="ts">

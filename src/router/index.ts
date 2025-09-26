@@ -1,23 +1,24 @@
-import type { LayoutConfig, MenuItem, SystemConfig } from '@/types/system'
+// import type { LayoutConfig, MenuItem, SystemConfig } from '@/types/system'
+import type { LayoutConfig, MenuItem, SystemRouter } from '@/types/router'
 
 // 图标基础路径
 const ICON_BASE_PATH = '/src/assets/icon/menu/'
 
 // 创建布局配置数组
+const Layout_Index: LayoutConfig = {
+  key: 'Layout-index',
+  comp: () => import('@/layouts/index.vue'),
+  describe: '空白布局',
+}
 const Layout_Main: LayoutConfig = {
-  comp: () => import('@/layouts/Layout-Main.vue'),
   key: 'Layout-Main',
+  comp: () => import('@/layouts/Layout-Main.vue'),
   describe: '主布局',
 }
 const Layout_LeftRight: LayoutConfig = {
-  comp: () => import('@/layouts/Layout-LeftRight.vue'),
   key: 'Layout-LeftRight',
+  comp: () => import('@/layouts/Layout-LeftRight.vue'),
   describe: '左右布局',
-}
-const Layout_Blank: LayoutConfig = {
-  comp: () => import('@/layouts/Layout-Blank.vue'),
-  key: 'Layout-Blank',
-  describe: '空白布局',
 }
 
 let DefaultLayout: LayoutConfig = Layout_Main // 默认布局
@@ -127,7 +128,7 @@ const menuConfigs: MenuItem[] = [
   {
     name: 'Login',
     comp: () => import('@/views/Login/index.vue'),
-    layout: Layout_Blank,
+    layout: Layout_Index,
     permission: ['admin', 'user', 'guest'],
     meta: {
       icon: `${ICON_BASE_PATH}user.svg`,
@@ -137,7 +138,7 @@ const menuConfigs: MenuItem[] = [
   {
     name: '404',
     comp: () => import('@/views/Errors/404.vue'),
-    layout: Layout_Blank,
+    layout: Layout_Index,
     permission: ['admin', 'user', 'guest'],
     meta: {
       icon: `${ICON_BASE_PATH}user.svg`,
@@ -147,7 +148,7 @@ const menuConfigs: MenuItem[] = [
   {
     name: '500',
     comp: () => import('@/views/Errors/500.vue'),
-    layout: Layout_Blank,
+    layout: Layout_Index,
     permission: ['admin', 'user', 'guest'],
     meta: {
       icon: `${ICON_BASE_PATH}user.svg`,
@@ -157,8 +158,7 @@ const menuConfigs: MenuItem[] = [
 ]
 
 // 导出系统配置
-export const systemConfig: SystemConfig = {
-  Theme: 'dark', // 默认主题 dark | light
+export const SystemRouterData: SystemRouter = {
   currentLayout: 'Layout-Main', // 默认布局
   currentPage: 'Login', // 默认页面
   Menus: menuConfigs, // 菜单配置

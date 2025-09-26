@@ -1,6 +1,5 @@
 <template>
   <div class="RS-232">
-    <h1>RS-232</h1>
   </div>
 </template>
 <script setup lang="ts">

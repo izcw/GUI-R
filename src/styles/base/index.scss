@@ -7,14 +7,14 @@
   padding: 0;
 }
 
-body {
+html,
+body,
+#app {
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
 }
 
 #app {
-  width: 100%;
-  height: 100vh;
   color: var(--color);
   background-color: var(bg-color);
 }
@@ -25,6 +25,10 @@ a {
 
 ul {
   list-style-type: none;
+}
+
+input {
+  outline: none;
 }
 
 @media (min-width: 1024px) {

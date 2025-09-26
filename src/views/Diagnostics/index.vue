@@ -1,6 +1,5 @@
 <template>
   <div class="Diagnostics">
-    <h1>Diagnostics</h1>
   </div>
 </template>
 <script setup lang="ts">

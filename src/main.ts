@@ -2,15 +2,15 @@ import '@/styles/main.scss'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { useSystemStore } from '@/stores/index'
 import { startTokenWorker } from '@/composables/useTokenWorker'
 import { UserActivityMonitor } from '@/config/userActivityMonitor' // 引入用户活动监控模块;
 import Message from '@/components/Element-PTN/Dialog/Message.vue' // 引入全局组件
+import ptnSpacer from '@/components/Element-PTN/Spacer.vue'
 
 import App from './App.vue'
 
 const app = createApp(App)
-
-app.component('Message', Message) // 全局注册组件
 
 // // 配置用户活动监听器
 // const activityMonitor = new UserActivityMonitor({
@@ -31,6 +31,10 @@ app.component('Message', Message) // 全局注册组件
 // app.config.globalProperties.$activityMonitor = activityMonitor
 
 app.use(createPinia())
+const systemStore = useSystemStore()
+// 全局注册组件
+app.component('ptn-Spacer', ptnSpacer)
+app.component('Message', Message)
 app.mount('#app')
 
 startTokenWorker() // ✅ 开启 Worker 监听

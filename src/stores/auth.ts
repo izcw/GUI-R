@@ -10,14 +10,14 @@ import {
   type MockPayload,
 } from '@/utils/token-mock'
 
-import { useSystemStore, useUserStore } from '@/stores/index'
+import { useRouterStore, useUserStore } from '@/stores/index'
 
 const STORAGE_KEY: string = 'Token'
 const STORAGE_TYPE: StorageType = 'session'
 
 export const useAuthStore = defineStore('auth', () => {
   const UserStore = useUserStore()
-  const systemStore = useSystemStore()
+  const routerStore = useRouterStore()
 
   const accessToken = ref<string>('')
   const refreshToken = ref<string>('')
@@ -77,7 +77,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     UserStore.saveToStorage()
-    systemStore.navigateTo(UserStore.Menus[0].name) // 自动导航至第一个菜单
+    routerStore.navigateTo(UserStore.Menus[0].name) // 自动导航至第一个菜单
     saveToStorage()
   }
 
@@ -89,7 +89,7 @@ export const useAuthStore = defineStore('auth', () => {
     storage.remove(STORAGE_KEY, STORAGE_TYPE)
     storage.remove('UserInfo', STORAGE_TYPE)
 
-    systemStore.navigateTo('Login')
+    routerStore.navigateTo('Login')
   }
 
   /** 静默刷新 accessToken */

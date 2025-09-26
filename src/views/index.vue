@@ -1,9 +1,9 @@
 <!-- src/views/index.vue -->
 <template>
   <!-- 动态布局 + 动态页面 -->
-  <template v-if="systemStore.currentLayoutComp && systemStore.currentPageComp">
-    <component :is="systemStore.currentLayoutComp">
-      <component :is="systemStore.currentPageComp" />
+  <template v-if="routerStore.currentLayoutComp && routerStore.currentPageComp">
+    <component :is="routerStore.currentLayoutComp">
+      <component :is="routerStore.currentPageComp" />
     </component>
   </template>
 
@@ -23,8 +23,8 @@
 
 <script setup lang="ts">
 import { watch, watchEffect, onUnmounted } from 'vue';
-import { useSystemStore } from '@/stores/index';
-const systemStore = useSystemStore();
+import { useRouterStore } from '@/stores/index';
+const routerStore = useRouterStore();
 import { UserActivityMonitor } from '@/config/userActivityMonitor'
 
 
@@ -33,13 +33,13 @@ const activityMonitor = new UserActivityMonitor({
   onTimeout: () => {
     console.warn('[活动监听] 会话超时处理')
     // 超时后跳转到登录页
-    systemStore.navigateTo('Login')
+    routerStore.navigateTo('Login')
   },
 })
 
 // 监听页面变化
 const unwatch = watch(
-  () => systemStore.config.currentPage,
+  () => routerStore.Router.currentPage,
   (newPage) => {
     if (newPage === 'Login') {
       console.log('当前是登录页，停止活动监听')

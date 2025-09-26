@@ -1,6 +1,5 @@
 <template>
   <div class="CEC">
-    <h1>CEC</h1>
   </div>
 </template>
 <script setup lang="ts">

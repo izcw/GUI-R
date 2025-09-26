@@ -24,7 +24,6 @@ body {
     -apple-system,
     sans-serif;
   line-height: 1.6;
-  min-height: 100vh;
 
   // 确保所有元素继承主题颜色
   * {
@@ -35,55 +34,32 @@ body {
   ::selection {
     @include bg-color("color-primary", 0.3);
   }
-
-  // 滚动条样式
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    @include bg-color("color-bg-secondary");
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @include bg-color("color-border");
-    border-radius: 4px;
-
-    &:hover {
-      @include bg-color("color-border-hover");
-    }
-  }
 }
 
-// 主题工具类
-.theme-transition {
-  transition: all 0.3s ease;
+// 滚动条样式
+// 宽度
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+// 轨道
+*::-webkit-scrollbar-track {
+  @include bg-color("color-bg-secondary");
+}
+
+// 滑块
+*::-webkit-scrollbar-thumb {
+  @include bg-color("color-border");
+  border-radius: 4px;
+
+  &:hover {
+    @include bg-color("color-border-hover");
+  }
 }
 
 // 深色模式下的图片调整
 .dark {
   img {
     transition: filter 0.3s ease;
-  }
-}
-
-// 辅助功能类
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-// 焦点可见性
-.focus-visible {
-  &:focus-visible {
-    outline: 2px solid rgb(var(--color-primary));
-    outline-offset: 2px;
   }
 }

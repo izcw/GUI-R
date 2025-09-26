@@ -1,27 +1,25 @@
 <template>
-  <div class="Footer">
+  <footer class="Footer">
     <div class="Test">
-      <!-- 主题切换按钮 -->
-      <div class="theme-btn">
+      <div class="item">
+        <span class="title">主题</span>
         <button @click="systemStore.toggleTheme">
           {{ systemStore.isDark ? '☀️ 浅色' : '🌙 深色' }}
         </button>
       </div>
-      <button @click="authStore.Logout">
-        退出登录
-      </button>
-
-      <button @click="systemStore.navigateBack()">后退</button>
-      <button @click="systemStore.navigateForward()">前进</button>
+      <div class="item">
+        <span class="title">路由</span>
+        <button @click="routerStore.navigateBack()">后退</button>
+        <button @click="routerStore.navigateForward()">前进</button>
+      </div>
     </div>
-  </div>
+  </footer>
 </template>
 <script setup lang="ts">
-import { useSystemStore } from '@/stores/index';
+import { useSystemStore, useRouterStore } from '@/stores/index';
 const systemStore = useSystemStore();
+const routerStore = useRouterStore();
 
-import { useAuthStore } from '@/stores/index'
-const authStore = useAuthStore()
 
 </script>
 <style scoped lang="scss">
@@ -29,7 +27,6 @@ const authStore = useAuthStore()
   display: flex;
   align-items: center;
   width: 100%;
-  height: 60px;
   background-color: #4800ff;
 
   button {
@@ -38,39 +35,31 @@ const authStore = useAuthStore()
     border-radius: 4px;
     cursor: pointer;
     margin: 0 10px;
+
+    &:hover {
+      background: #f0f0f06b;
+    }
   }
 
   .Test {
-    display: flex;
+    width: 100%;
+    height: 100%;
 
-    .theme-btn {
+    .item {
+      width: 100%;
+      min-height: 30px;
+      padding: 1rem;
+      box-sizing: border-box;
+      border-bottom: 1px solid #ccc;
 
-      button {
+      display: flex;
+      align-items: center;
 
-
-
-        &:hover {
-          background: #f0f0f0;
-        }
+      .title {
+        font-size: 14px;
+        min-width: 50px;
       }
     }
-
-    .layout-switch {
-
-      .nav {
-        display: flex;
-
-        button {
-
-          &.active {
-            background: #42b883;
-            color: #fff;
-          }
-        }
-      }
-    }
-
-
 
   }
 }

@@ -5,10 +5,20 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import imagemin from 'vite-plugin-imagemin'
 import { visualizer } from 'rollup-plugin-visualizer'
 
+import AutoImport from 'unplugin-auto-import/vite' // 自动导入插件
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers' // Element Plus 解析器
+
 export default defineConfig({
   plugins: [
     vue() as PluginOption,
     vueDevTools() as PluginOption,
+    AutoImport({
+      resolvers: [ElementPlusResolver()],
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()],
+    }),
     // 可视化打包分析工具
     // visualizer({
     //   open: true,
@@ -31,7 +41,7 @@ export default defineConfig({
   server: {
     port: 3033,
     host: true,
-    open: true,
+    open: false,
   },
   resolve: {
     alias: {
@@ -94,6 +104,7 @@ export default defineConfig({
         manualChunks: (id: string) => {
           if (id.includes('node_modules')) {
             // 将大型库单独打包
+            if (id.includes('element-plus')) return 'element-plus'
             if (id.includes('vue')) return 'vue'
             if (id.includes('axios')) return 'axios'
             if (id.includes('lodash')) return 'lodash'

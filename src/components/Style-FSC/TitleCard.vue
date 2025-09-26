@@ -20,6 +20,7 @@ defineProps({
 .TitleCard {
   width: 100%;
   padding: 30px;
+  box-sizing: border-box;
   border-radius: 6px;
   background-color: #2d3441;
   margin-bottom: 20px;

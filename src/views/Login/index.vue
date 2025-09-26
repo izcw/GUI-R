@@ -13,22 +13,19 @@
     Please enter TriggerName before selecting command.
   </ptn-dialog> -->
 
-
   <div class="Login">
     <div class="Login-box">
       <div class="title">
         <h1>LOGIN</h1>
       </div>
       <div class="Form-box">
-        <input type="text" v-model="UserName" placeholder="用户名" @blur="validate('username')"
-          :class="{ error: errors.username }">
-        <div v-if="errors.username" class="error-message">{{ errors.username }}</div>
-        <input type="password" v-model="Password" placeholder="密码" @blur="validate('password')"
-          :class="{ error: errors.password }">
-        <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
-        <button @click="LoginSubmit">
-          登录
-        </button>
+        <div>
+          <input type="text" class="username" v-model="UserName" placeholder="User Name" @blur="validate('username')"
+            :class="{ error: errors.username }">
+          <input type="password" class="password" v-model="Password" placeholder="Password" @blur="validate('password')"
+            :class="{ error: errors.password }">
+        </div>
+        <button @click="LoginSubmit">Login</button>
       </div>
     </div>
   </div>
@@ -39,7 +36,7 @@ import { ref } from 'vue';
 import { useAuthStore } from '@/stores/index';
 //
 import ptnDialog from '@/components/Element-PTN/Dialog/index.vue'
-const dialogVisible = ref(true);
+const dialogVisible = ref(true); const color = ref('#409EFF')
 //
 
 const authStore = useAuthStore();
@@ -111,13 +108,13 @@ const LoginSubmit = () => {
   overflow: auto;
 
   .Login-box {
-    width: 350px;
-    height: 450px;
-    min-width: 350px;
-    min-height: 450px;
-
+    width: 420px;
+    height: 500px;
+    min-width: 420px;
+    min-height: 500px;
     background-color: #2d3441;
     border-radius: 6px;
+    overflow: hidden;
 
     display: flex;
     flex-direction: column;
@@ -125,49 +122,49 @@ const LoginSubmit = () => {
 
     .title {
       width: 100%;
-      height: 60px;
+      height: 100px;
+      min-height: 100px;
       background-color: #424954;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
-      box-sizing: border-box;
     }
 
     .Form-box {
-      padding: 1rem;
+      width: 300px;
+      height: 100%;
+      padding: 60px 0;
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
 
       input {
         width: 100%;
-        margin-bottom: 1rem;
-        padding: 0.5rem;
-        border: 1px solid #ccc;
+        margin-bottom: 2rem;
+        padding: 12px 12px 12px 40px;
+        border: none;
         border-radius: 4px;
-      }
+        background-repeat: no-repeat;
+        background-position: 8px center;
+        background-size: 24px;
 
-      .error {
-        border-color: red;
-      }
+        &.username {
+          background-image: url('@/assets/icon/common/user.png');
+        }
 
-      .error-message {
-        color: red;
-        font-size: 12px;
-        margin-bottom: 1rem;
+        &.password {
+          background-image: url('@/assets/icon/common/lock.png');
+        }
       }
 
       button {
-        padding: 0.5rem 1rem;
-        background-color: #007bff;
-        color: white;
+        width: 100%;
         border: none;
-        border-radius: 4px;
-        cursor: pointer;
-
-        &:hover {
-          background-color: #0056b3;
-        }
+        padding: 10px;
       }
+
+
     }
   }
 }

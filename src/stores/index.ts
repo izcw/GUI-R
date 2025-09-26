@@ -10,4 +10,5 @@ export function setupStore(app: App) {
 export * from './system'
 export * from './user'
 export * from './auth'
+export * from './router'
 export default pinia
