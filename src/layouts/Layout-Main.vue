@@ -8,10 +8,10 @@
       <div class="container">
         <slot />
       </div>
-      <div class="footer">
-        <Footer />
-      </div>
     </main>
+    <div class="footer">
+      <Footer />
+    </div>
   </div>
 </template>
 <script setup lang="ts">

@@ -7,6 +7,7 @@ export type LayoutType = 'Layout-index' | 'Layout-Main' | 'Layout-LeftRight'
 // 定义页面类型
 export type PageName =
   | 'Login'
+  | 'PTN'
   | 'Control'
   | 'Audio'
   | 'Configuration'

@@ -33,7 +33,7 @@ const app = createApp(App)
 app.use(createPinia())
 const systemStore = useSystemStore()
 // 全局注册组件
-app.component('ptn-Spacer', ptnSpacer)
+app.component('ptn-spacer', ptnSpacer)
 app.component('Message', Message)
 app.mount('#app')
 

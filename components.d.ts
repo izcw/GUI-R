@@ -9,13 +9,11 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Dialog: typeof import('./src/components/Element-PTN/Dialog/index.vue')['default']
-    ElButton: typeof import('element-plus/es')['ElButton']
-    ElDatePickerPanel: typeof import('element-plus/es')['ElDatePickerPanel']
-    ElDialog: typeof import('element-plus/es')['ElDialog']
     Message: typeof import('./src/components/Element-PTN/Dialog/Message.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Spacer: typeof import('./src/components/Element-PTN/Spacer.vue')['default']
+    Switch: typeof import('./src/components/Element-PTN/Form/Switch.vue')['default']
     TitleCard: typeof import('./src/components/Style-FSC/TitleCard.vue')['default']
     TitleLineCard: typeof import('./src/components/Style-MFP/TitleLineCard.vue')['default']
     TitleLineWrapCard: typeof import('./src/components/Style-MFP/TitleLineWrapCard.vue')['default']
